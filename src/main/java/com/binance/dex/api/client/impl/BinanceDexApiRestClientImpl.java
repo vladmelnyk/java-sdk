@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
  */
 public class BinanceDexApiRestClientImpl implements BinanceDexApiRestClient {
     private BinanceDexApi binanceDexApi;
+    private static final okhttp3.MediaType MEDIA_TYPE = okhttp3.MediaType.parse("text/plain; charset=utf-8");
 
     public BinanceDexApiRestClientImpl(String baseUrl) {
         this.binanceDexApi = BinanceDexApiClientGenerator.createService(BinanceDexApi.class, baseUrl);
@@ -165,6 +166,15 @@ public class BinanceDexApiRestClientImpl implements BinanceDexApiRestClient {
         }
     }
 
+    public List<TransactionMetadata> broadcast(String rawTxHash, boolean sync) {
+        try {
+            RequestBody requestBody = RequestBody.create(MEDIA_TYPE, rawTxHash);
+            return BinanceDexApiClientGenerator.executeSync(binanceDexApi.broadcast(sync, requestBody));
+        } catch (BinanceDexApiException e) {
+            throw e;
+        }
+    }
+
     public List<TransactionMetadata> newOrder(NewOrder newOrder, Wallet wallet, TransactionOption options, boolean sync)
             throws IOException, NoSuchAlgorithmException {
         wallet.ensureWalletIsReady(this);
@@ -178,7 +188,7 @@ public class BinanceDexApiRestClientImpl implements BinanceDexApiRestClient {
         wallet.ensureWalletIsReady(this);
         TransactionRequestAssembler assembler = new TransactionRequestAssembler(wallet, options);
         RequestBody requestBody = assembler.buildVote(vote);
-        return broadcast(requestBody,sync,wallet);
+        return broadcast(requestBody, sync, wallet);
     }
 
     public List<TransactionMetadata> cancelOrder(CancelOrder cancelOrder, Wallet wallet, TransactionOption options, boolean sync)
@@ -198,7 +208,7 @@ public class BinanceDexApiRestClientImpl implements BinanceDexApiRestClient {
     }
 
     public List<TransactionMetadata> multiTransfer(MultiTransfer multiTransfer, Wallet wallet, TransactionOption options,
-                                            boolean sync) throws IOException, NoSuchAlgorithmException {
+                                                   boolean sync) throws IOException, NoSuchAlgorithmException {
         wallet.ensureWalletIsReady(this);
         TransactionRequestAssembler assembler = new TransactionRequestAssembler(wallet, options);
         RequestBody requestBody = assembler.buildMultiTransfer(multiTransfer);
