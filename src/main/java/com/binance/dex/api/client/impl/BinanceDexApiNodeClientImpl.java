@@ -54,6 +54,11 @@ public class BinanceDexApiNodeClientImpl implements BinanceDexApiNodeClient {
     }
 
     @Override
+    public List<TransactionMetadata> broadcast(String rawTxHash, boolean sync) throws IOException, NoSuchAlgorithmException {
+        throw new BinanceDexApiException("Not implemented", new Throwable());
+    }
+
+    @Override
     public Infos getNodeInfo() {
         JsonRpcResponse<NodeInfos> rpcResponse = BinanceDexApiClientGenerator.executeSync(binanceDexNodeApi.getNodeStatus());
         checkRpcResult(rpcResponse);
@@ -82,10 +87,10 @@ public class BinanceDexApiNodeClientImpl implements BinanceDexApiNodeClient {
     @Override
     public Account getAccount(String address) {
         try {
-            String queryPath = String.format("\"/account/%s\"",address);
+            String queryPath = String.format("\"/account/%s\"", address);
             JsonRpcResponse<AccountResult> response = BinanceDexApiClientGenerator.executeSync(binanceDexNodeApi.getAccount(queryPath));
             checkRpcResult(response);
-            if(response.getResult().getResponse().getValue() != null){
+            if (response.getResult().getResponse().getValue() != null) {
                 byte[] value = response.getResult().getResponse().getValue();
                 byte[] array = new byte[value.length - 4];
                 System.arraycopy(value, 4, array, 0, array.length);
@@ -104,7 +109,7 @@ public class BinanceDexApiNodeClientImpl implements BinanceDexApiNodeClient {
         try {
             JsonRpcResponse<AccountResult> response = BinanceDexApiClientGenerator.executeSync(binanceDexNodeApi.getCommittedAccount(encodedAddress));
             checkRpcResult(response);
-            if(response.getResult().getResponse().getValue() != null){
+            if (response.getResult().getResponse().getValue() != null) {
                 byte[] value = response.getResult().getResponse().getValue();
                 byte[] array = new byte[value.length - 4];
                 System.arraycopy(value, 4, array, 0, array.length);
