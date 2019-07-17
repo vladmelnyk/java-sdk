@@ -58,10 +58,12 @@ public interface BinanceDexApiRestClient {
 
     TransactionPage getTransactions(TransactionsRequest request);
 
+    List<TransactionMetadata> broadcast(String rawTxHash, boolean sync) throws IOException, NoSuchAlgorithmException;
+
     List<TransactionMetadata> newOrder(NewOrder newOrder, Wallet wallet, TransactionOption options, boolean sync)
             throws IOException, NoSuchAlgorithmException;
 
-    List<TransactionMetadata> vote(Vote vote,Wallet wallet, TransactionOption options, boolean sync) throws IOException, NoSuchAlgorithmException;
+    List<TransactionMetadata> vote(Vote vote, Wallet wallet, TransactionOption options, boolean sync) throws IOException, NoSuchAlgorithmException;
 
     List<TransactionMetadata> cancelOrder(CancelOrder cancelOrder, Wallet wallet, TransactionOption options, boolean sync)
             throws IOException, NoSuchAlgorithmException;
